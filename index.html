@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concordïa • Glassmorphism Demo (v1.1)</title>
+<style>
+:root{
+  --radius-xl:22px; --radius-md:16px; --blur:18px; --border:1px;
+  --shadow:0 12px 34px rgba(0,0,0,.18);
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, Helvetica, Arial;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--font);background:#0B1116}
+
+/* THEMES */
+.canvas[data-theme="slate"]{
+  --tint:rgba(255,255,255,.10);
+  --stroke:rgba(255,255,255,.28);
+  --ink:#E8EDF1;--muted:#A7B1B7;--accent:#2ED0FF;
+  --bg: radial-gradient(1200px 800px at 20% 10%, #0C1116 0%, #0A0F14 35%, #06090D 100%),
+        url('./assets/bg.jpg') center/cover no-repeat fixed;
+  --ink-strong:#ffffff;
+}
+.canvas[data-theme="charcoal"]{
+  --tint:rgba(40,45,55,.22);
+  --stroke:rgba(255,255,255,.20);
+  --ink:#F1F5F9;--muted:#9AA3AB;--accent:#9AD2E1;
+  --bg: linear-gradient(160deg, #0E1116 0%, #10151C 100%),
+        url('./assets/bg.jpg') center/cover no-repeat fixed;
+  --ink-strong:#ffffff;
+}
+.canvas[data-theme="graphite"]{
+  --tint:rgba(255,255,255,.07);
+  --stroke:rgba(255,255,255,.18);
+  --ink:#0D1216; /* darker text for better contrast on light panels */
+  --muted:#4E5862;--accent:#D1D5DB;
+  --bg: linear-gradient(180deg, #0A0C0F 0%, #0B0E12 100%),
+        url('./assets/bg.jpg') center/cover no-repeat fixed;
+  --ink-strong:#F6F7FA;
+}
+.canvas[data-theme="concordia"]{
+  --tint:rgba(46,208,255,.10);
+  --stroke:rgba(46,208,255,.28);
+  --ink:#EAFBFF;--muted:#98C8D7;--accent:#2ED0FF;
+  --bg: radial-gradient(900px 700px at 85% 10%, rgba(46,208,255,.18) 0%, transparent 60%),
+        radial-gradient(1100px 800px at 10% 90%, rgba(255,255,255,.06) 0%, transparent 65%),
+        linear-gradient(180deg, #0B1116 0%, #091016 100%),
+        url('./assets/bg.jpg') center/cover no-repeat fixed;
+  --ink-strong:#ffffff;
+}
+/* New LIGHT theme */
+.canvas[data-theme="light"]{
+  --tint: rgba(255,255,255,.58);
+  --stroke: rgba(0,0,0,.06);
+  --ink: #0A0E12;
+  --muted: #58626C;
+  --accent: #0F7AA6; /* gentle steel blue accent */
+  --bg: radial-gradient(1400px 900px at 80% 10%, rgba(15,122,166,.08) 0%, transparent 60%),
+        linear-gradient(180deg, #F6F8FA 0%, #EEF2F6 100%),
+        url('./assets/bg_light.jpg') center/cover no-repeat fixed;
+  --ink-strong:#0A0E12;
+}
+
+/* LAYOUT */
+.canvas{
+  min-height:100dvh; padding:22px; display:grid; gap:22px;
+  background: var(--bg);
+}
+.header{ border-radius:var(--radius-xl); padding:24px 24px 16px; }
+.row{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+@media (max-width:900px){ .row{ grid-template-columns:1fr; } }
+
+/* GLASS CORE */
+.glass{
+  background:var(--tint);
+  border:var(--border) solid var(--stroke);
+  border-radius:var(--radius-md);
+  backdrop-filter:blur(var(--blur)) saturate(160%);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(160%);
+  box-shadow:var(--shadow);
+  outline:1px solid rgba(255,255,255,.06);
+}
+/* In LIGHT theme, soften the outline color */
+.canvas[data-theme="light"] .glass{ outline-color: rgba(0,0,0,.03); }
+
+/* TYPO */
+.title{font-weight:700;font-size:22px;letter-spacing:.2px;color:var(--ink-strong)}
+.subtitle{margin-top:6px;font-size:13.5px;color:var(--muted)}
+.card{padding:22px;color:var(--ink)}
+.card h3{margin:0 0 10px 0;font-size:16px;letter-spacing:.2px;color:var(--ink)}
+.card p{margin:0 0 16px 0;font-size:13px;line-height:1.5;color:var(--muted)}
+
+/* CONTROLS (text-only) */
+.pill{
+  appearance:none;border:var(--border) solid var(--stroke);
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border-radius:999px;padding:10px 16px;color:var(--ink);font-weight:600;letter-spacing:.2px;cursor:pointer;
+  transition:transform .12s ease, background .2s ease, border-color .2s ease;
+}
+/* Light theme pill fill slightly brighter */
+.canvas[data-theme="light"] .pill{
+  background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+}
+.pill:focus,.pill:hover{ transform:translateY(-1px); background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); border-color:var(--accent); outline:none; }
+.canvas[data-theme="light"] .pill:focus,
+.canvas[data-theme="light"] .pill:hover{
+  background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.7));
+}
+
+/* Chips and meter */
+.chip{display:inline-block;margin-right:8px;margin-top:8px;padding:6px 10px;border-radius:999px;border:var(--border) solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--ink);font-size:12px}
+.canvas[data-theme="light"] .chip{
+  border-color: rgba(0,0,0,.08);
+  background: rgba(255,255,255,.65);
+}
+.meter{position:relative;height:8px;border-radius:999px;background:rgba(255,255,255,.08);border:var(--border) solid rgba(255,255,255,.16);overflow:hidden}
+.meter span{display:block;height:100%;background:linear-gradient(90deg, var(--accent), rgba(255,255,255,.85));filter:saturate(130%)}
+.canvas[data-theme="light"] .meter{
+  background: rgba(0,0,0,.06);
+  border-color: rgba(0,0,0,.06);
+}
+.canvas[data-theme="light"] .meter span{
+  background: linear-gradient(90deg, var(--accent), rgba(10,14,18,.35));
+}
+
+/* Theme toggles */
+.toggles{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 0 0}
+.toggles button{background:transparent;border:1px solid rgba(0,0,0,.18);color:var(--ink);padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
+.toggles button.active{border-color:var(--accent)}
+/* Improve contrast for dark themes' toggle borders */
+.canvas[data-theme="graphite"] .toggles button,
+.canvas[data-theme="charcoal"] .toggles button,
+.canvas[data-theme="slate"] .toggles button,
+.canvas[data-theme="concordia"] .toggles button{
+  border-color: rgba(255,255,255,.16); color: #E8EDF1;
+}
+</style>
+</head>
+<body>
+  <!-- default theme remains neutral (graphite); light is now available too -->
+  <div class="canvas" data-theme="graphite">
+    <div class="glass header">
+      <div class="title">Concordïa</div>
+      <div class="subtitle">
+        Frosted Glass UI — choose a theme below (no icons).
+        <div class="toggles">
+          <button data-theme="graphite" class="active">graphite</button>
+          <button data-theme="slate">slate</button>
+          <button data-theme="charcoal">charcoal</button>
+          <button data-theme="concordia">concordia</button>
+          <button data-theme="light">light</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="glass card">
+        <h3>Analyze</h3>
+        <p>Drop a file or paste text to begin.</p>
+        <button class="pill">Run Analysis</button>
+      </div>
+      <div class="glass card">
+        <h3>Standards</h3>
+        <p>Layer 1 baseline checks — pass/fail with confidence.</p>
+        <div class="chip">Baseline</div>
+        <div class="chip">Confidence</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="glass card">
+        <h3>Benchmarks</h3>
+        <p>Client overlays and tolerances.</p>
+        <div class="meter"><span style="width:62%"></span></div>
+      </div>
+      <div class="glass card">
+        <h3>Export</h3>
+        <p>Redline docx + summary sheet.</p>
+        <button class="pill">Export .docx</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const canvas = document.querySelector('.canvas');
+const buttons = document.querySelectorAll('.toggles button');
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const theme = btn.getAttribute('data-theme');
+    canvas.setAttribute('data-theme', theme);
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
