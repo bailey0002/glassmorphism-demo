@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concordïa Sidebar • Self‑Contained Glass UI</title>
+<meta name="color-scheme" content="light dark">
+<style>
+:root{
+  --radius-xl:22px; --radius-md:16px; --blur:18px; --border:1px;
+  --shadow:0 12px 34px rgba(0,0,0,.24);
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, Helvetica, Arial;
+  --accent:#1389AF;
+}
+
+/* THEME TOKENS */
+.canvas[data-theme="graphite"]{
+  --tint:rgba(255,255,255,.07);
+  --stroke:rgba(255,255,255,.18);
+  --ink:#E8EDF1; --muted:#A7B1B7; --accent:#CFE8F1;
+  --bg: linear-gradient(180deg,#0B1116 0%,#0A0E12 100%);
+  --ink-strong:#FFFFFF;
+}
+.canvas[data-theme="slate"]{
+  --tint:rgba(255,255,255,.10);
+  --stroke:rgba(255,255,255,.28);
+  --ink:#E8EDF1; --muted:#A7B1B7; --accent:#2ED0FF;
+  --bg: radial-gradient(1200px 800px at 20% 10%, #0C1116 0%, #0A0F14 35%, #06090D 100%);
+  --ink-strong:#FFFFFF;
+}
+.canvas[data-theme="charcoal"]{
+  --tint:rgba(40,45,55,.22);
+  --stroke:rgba(255,255,255,.20);
+  --ink:#F1F5F9; --muted:#9AA3AB; --accent:#9AD2E1;
+  --bg: linear-gradient(160deg, #0E1116 0%, #10151C 100%);
+  --ink-strong:#FFFFFF;
+}
+.canvas[data-theme="concordia"]{
+  --tint:rgba(46,208,255,.10);
+  --stroke:rgba(46,208,255,.28);
+  --ink:#EAFBFF; --muted:#98C8D7; --accent:#2ED0FF;
+  --bg: radial-gradient(900px 700px at 85% 10%, rgba(46,208,255,.18) 0%, transparent 60%),
+        radial-gradient(1100px 800px at 10% 90%, rgba(255,255,255,.06) 0%, transparent 65%),
+        linear-gradient(180deg, #0B1116 0%, #091016 100%);
+  --ink-strong:#FFFFFF;
+}
+.canvas[data-theme="light"]{
+  --tint: rgba(255,255,255,.58);
+  --stroke: rgba(0,0,0,.06);
+  --ink: #0A0E12;
+  --muted: #58626C;
+  --accent: #0F7AA6;
+  --bg: radial-gradient(1400px 900px at 80% 10%, rgba(15,122,166,.08) 0%, transparent 60%),
+        linear-gradient(180deg, #F6F8FA 0%, #EEF2F6 100%);
+  --ink-strong:#0A0E12;
+}
+
+/* LAYOUT */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--font)}
+.canvas{
+  min-height:100dvh;
+  padding:22px;
+  display:grid; gap:22px;
+  background: var(--bg);
+}
+
+/* GLASS CORE */
+.glass{
+  background:var(--tint);
+  border:var(--border) solid var(--stroke);
+  border-radius:var(--radius-md);
+  backdrop-filter: blur(var(--blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
+  box-shadow:var(--shadow);
+  outline:1px solid rgba(255,255,255,.06);
+}
+.canvas[data-theme="light"] .glass{ outline-color: rgba(0,0,0,.03); }
+
+/* HEADER / SHIMMER HERO */
+.header{ padding:0; overflow:hidden; }
+.hero{
+  position:relative; height:120px; border-radius:inherit; overflow:hidden;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+/* Pure CSS shimmer fallback (self‑contained) */
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg, rgba(19,137,175,.0) 0%, rgba(19,137,175,.28) 50%, rgba(19,137,175,.0) 100%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  background-size:200% 100%, 100% 100%;
+  animation:scan 4s linear infinite;
+  filter:saturate(130%) contrast(105%);
+  opacity:.65;
+}
+@keyframes scan{ 0%{background-position:-100% 0, 0 0;} 100%{background-position:100% 0, 0 0;} }
+
+/* Overlaid wordmark (replaces PNG logo) */
+.wordmark{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  font-weight:800; letter-spacing:.3px; color:var(--ink-strong);
+  text-shadow: 0 2px 16px rgba(0,0,0,.25);
+}
+.wordmark .name{ font-size:26px; line-height:1; }
+.wordmark .plus{
+  font-size:26px; line-height:1; font-weight:900;
+  color: var(--accent);
+}
+
+/* SUBHEADER */
+.subheader{ padding:16px 18px 18px; }
+.title{font-weight:700;font-size:18px;letter-spacing:.2px;color:var(--ink-strong)}
+.subtitle{margin-top:6px;font-size:13px;color:var(--muted)}
+
+/* THEME TOGGLES (text‑only) */
+.toggles{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 0}
+.toggles button{
+  background:transparent; border:1px solid rgba(0,0,0,.18);
+  color:var(--ink); padding:6px 10px; border-radius:999px; font-size:12px; cursor:pointer
+}
+.toggles button.active{border-color:var(--accent)}
+.canvas[data-theme="graphite"] .toggles button,
+.canvas[data-theme="charcoal"] .toggles button,
+.canvas[data-theme="slate"] .toggles button,
+.canvas[data-theme="concordia"] .toggles button{
+  border-color: rgba(255,255,255,.18); color: #E8EDF1;
+}
+
+/* CARDS */
+.row{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+@media (max-width:900px){ .row{ grid-template-columns:1fr; } }
+.card{padding:20px;color:var(--ink)}
+.card h3{margin:0 0 10px 0;font-size:16px;letter-spacing:.2px;color:var(--ink)}
+.card p{margin:0 0 16px 0;font-size:13px;line-height:1.5;color:var(--muted)}
+
+/* CONTROLS */
+.pill{
+  appearance:none;border:var(--border) solid var(--stroke);
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border-radius:999px;padding:10px 16px;color:var(--ink);
+  font-weight:600;letter-spacing:.2px;cursor:pointer;
+  transition:transform .12s ease, background .2s ease, border-color .2s ease;
+}
+.pill:focus,.pill:hover{ transform:translateY(-1px); background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); border-color:var(--accent); outline:none; }
+.canvas[data-theme="light"] .pill{
+  background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.75));
+}
+.canvas[data-theme="light"] .pill:focus,
+.canvas[data-theme="light"] .pill:hover{
+  background:linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,.85));
+}
+
+/* Chips & meter */
+.chip{display:inline-block;margin-right:8px;margin-top:8px;padding:6px 10px;border-radius:999px;border:var(--border) solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--ink);font-size:12px}
+.canvas[data-theme="light"] .chip{
+  border-color: rgba(0,0,0,.08); background: rgba(255,255,255,.70);
+}
+.meter{position:relative;height:8px;border-radius:999px;background:rgba(255,255,255,.08);border:var(--border) solid rgba(255,255,255,.16);overflow:hidden}
+.meter span{display:block;height:100%;background:linear-gradient(90deg, var(--accent), rgba(255,255,255,.85));filter:saturate(130%)}
+.canvas[data-theme="light"] .meter{ background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.06); }
+.canvas[data-theme="light"] .meter span{ background: linear-gradient(90deg, var(--accent), rgba(10,14,18,.35)); }
+</style>
+</head>
+<body>
+  <div class="canvas" data-theme="graphite" id="canvas">
+    <div class="glass header">
+      <div class="hero" aria-hidden="true">
+        <div class="wordmark" aria-label="Concordïa">
+          <div class="name">Concordïa</div><div class="plus">+</div>
+        </div>
+      </div>
+      <div class="subheader">
+        <div class="title">NDA • Review Panel</div>
+        <div class="subtitle">
+          Frosted glass UI — choose a theme (no external images).
+          <div class="toggles" role="group" aria-label="Theme selector">
+            <button data-theme="graphite" class="active" aria-pressed="true">graphite</button>
+            <button data-theme="slate" aria-pressed="false">slate</button>
+            <button data-theme="charcoal" aria-pressed="false">charcoal</button>
+            <button data-theme="concordia" aria-pressed="false">concordia</button>
+            <button data-theme="light" aria-pressed="false">light</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="glass card">
+        <h3>Analyze</h3>
+        <p>Drop a file or paste text to begin.</p>
+        <button class="pill">Run Analysis</button>
+      </div>
+      <div class="glass card">
+        <h3>Standards</h3>
+        <p>Layer 1 baseline checks — pass/fail with confidence.</p>
+        <div class="chip">Baseline</div>
+        <div class="chip">Confidence</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="glass card">
+        <h3>Benchmarks</h3>
+        <p>Client overlays and tolerances.</p>
+        <div class="meter"><span style="width:62%"></span></div>
+      </div>
+      <div class="glass card">
+        <h3>Export</h3>
+        <p>Redline .docx + summary sheet.</p>
+        <button class="pill">Export .docx</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('canvas');
+  const buttons = document.querySelectorAll('.toggles button');
+  const STORAGE_KEY = 'concordia_theme';
+
+  // restore saved theme
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    canvas.setAttribute('data-theme', saved);
+    buttons.forEach(b => {
+      b.classList.toggle('active', b.dataset.theme === saved);
+      b.setAttribute('aria-pressed', String(b.dataset.theme === saved));
+    });
+  }
+
+  // click to switch
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+  });
+
+  // keyboard: press "t" to cycle themes
+  window.addEventListener('keydown', (e)=>{
+    if (e.key.toLowerCase() === 't') {
+      const order = ['graphite','slate','charcoal','concordia','light'];
+      const cur = canvas.getAttribute('data-theme') || order[0];
+      const next = order[(order.indexOf(cur)+1) % order.length];
+      setTheme(next);
+    }
+  });
+
+  function setTheme(theme){
+    canvas.setAttribute('data-theme', theme);
+    buttons.forEach(b => {
+      const active = b.dataset.theme === theme;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+    try { localStorage.setItem(STORAGE_KEY, theme); } catch(_){}
+  }
+})();
+</script>
+</body>
+</html>
